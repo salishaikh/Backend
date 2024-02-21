@@ -28,7 +28,7 @@ router.post("/login", async (req, res) => {
     }
     return res.send(user);
   } catch (error) {
-    return res.status(500).send(error);
+    return res.status(400).send(error);
   }
 });
 
