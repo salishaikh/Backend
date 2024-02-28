@@ -3,6 +3,7 @@ import connectmongo from "./db/index.js";
 import app from "./app.js";
 import userRoutes from "./routes/userRoutes.js";
 import taskRoutes from "./routes/taskRoutes.js";
+import boardRoutes from "./routes/boardRoutes.js";
 
 dotenv.config({
   path: "./env",
@@ -17,7 +18,8 @@ connectmongo()
   });
 // ROUTES DEFINE
 app.use("/api/auth", userRoutes);
-app.use("/api/notes", taskRoutes);
+app.use("/api/tasks", taskRoutes);
+app.use("/api/board", boardRoutes);
 
 app.listen(process.env.PORT || 8000, () => {
   console.log(

@@ -2,6 +2,10 @@ import mongoose, { Schema } from "mongoose";
 
 const taskSchema = new Schema(
   {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
     title: {
       type: String,
       required: true,
@@ -10,9 +14,13 @@ const taskSchema = new Schema(
       type: String,
       required: true,
     },
-    completed: {
-      type: Boolean,
-      default: false,
+    status: {
+      type: String,
+      default: "todo",
+    },
+    boardid: {
+      type: Schema.Types.ObjectId,
+      ref: "Board",
     },
   },
   {
