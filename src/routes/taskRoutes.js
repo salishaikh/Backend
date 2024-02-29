@@ -6,9 +6,9 @@ import { body, validationResult } from "express-validator";
 const router = new Router();
 
 // ROute 1 :----> get all task using : POST "/api/notes"
-router.get("/fetchtask", fetchuser, async (req, res) => {
+router.post("/fetchtask", fetchuser, async (req, res) => {
   const task = await Task.find({ user: req.user.id });
-  res.send(task);
+  return res.send(task);
 });
 
 // ROute 2   :----> create task using : POST "/api/notes"
@@ -30,18 +30,19 @@ router.post(
         title,
         description,
         user: req.user.id,
+        boardid: req.body.boardId,
       });
 
       const savedtask = await task.save();
-      res.send(savedtask);
+      return res.status(200).send(savedtask);
     } catch (error) {
-      return res.send(400).json({ error: error.message });
+      return res.status(400).json({ error: error.message });
     }
   }
 );
 
 // ROute 3   :----> update task using : POST "/api/notes"
-router.put("/updatetask/:id", fetchuser, async (req, res) => {
+router.post("/updatetask", fetchuser, async (req, res) => {
   try {
     const { title, description, status } = req.body;
     const newtask = {};
@@ -55,7 +56,7 @@ router.put("/updatetask/:id", fetchuser, async (req, res) => {
       newtask.status = status;
     }
     // find the task to be uodate
-    let task = await Task.findById(req.params.id);
+    let task = await Task.findById(req.body.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -64,24 +65,25 @@ router.put("/updatetask/:id", fetchuser, async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
     task = await Task.findByIdAndUpdate(
-      req.params.id,
+      req.body.id,
       { $set: newtask },
       {
         new: true,
       }
     );
     console.log(task);
-    res.status(200).send(task);
+    return res.status(200).send(task);
   } catch (error) {
-    return res.sendStatus(400).json({ error: error.message });
+    return res.status(400).json({ error: error.message });
   }
+  console.log("hvgdui");
 });
 
 // ROute 4   :----> delete task using : POST "/api/notes"
-router.delete("/deletetask/:id", fetchuser, async (req, res) => {
+router.post("/deletetask", fetchuser, async (req, res) => {
   try {
     // find the task to be uodate
-    let task = await Task.findById(req.params.id);
+    let task = await Task.findById(req.body.id);
     if (!task) {
       return res.status(404).json({ error: "Task not found" });
     }
@@ -89,11 +91,11 @@ router.delete("/deletetask/:id", fetchuser, async (req, res) => {
     if (task.user.toString() !== req.user.id) {
       return res.status(401).json({ error: "Unauthorized" });
     }
-    task = await Task.findByIdAndDelete(req.params.id);
-    console.log(task);
+    task = await Task.findByIdAndDelete(req.body.id);
     res.status(200).send({ "success ": "task successfully deleted" });
   } catch (error) {
-    return res.sendStatus(400).json({ error: error.message });
+    console.log(error);
+    return res.status(400).json({ error: error.message });
   }
 });
 export default router;
