@@ -17,24 +17,7 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    todotasks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Task",
-      },
-    ],
-    doingtasks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Task",
-      },
-    ],
-    donetasks: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Task",
-      },
-    ],
+
   },
   {
     timestamps: true,

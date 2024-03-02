@@ -49,5 +49,36 @@ router.post("/deleteboard", fetchuser, async (req, res) => {
     console.log(error.message);
   }
 });
+// ROute 4  :----> update board using : POST "/api/board"
+router.post("/updateboard", fetchuser, async (req, res) => {
+  try {
+    const { title } = req.body;
+    const newboard = {};
+    if (title) {
+      newboard.title = title;
+    }
+   
+    // find the task to be uodate
+    let board = await Board.findById(req.body.id);
+    if (!board) {
+      return res.status(404).json({ error: "Board not found" });
+    }
 
+    if (board.user.toString() !== req.user.id) {
+      return res.status(401).json({ error: "Unauthorized" });
+    }
+    console.log(board);
+    board = await Board.findByIdAndUpdate(
+      req.body.id,
+      { $set: newboard },
+      {
+        new: true,
+      }
+    );
+    return res.status(200).send(board);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ error: error.message });
+  }
+});
 export default router;
